@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  bio-tools:
+    build: .
+    container_name: bio-tools
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./work:/work
+      - ./eggnog_db:/data/eggnog
+      
+    
