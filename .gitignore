@@ -1,2 +1,2 @@
-*.dmnd
-*.db
+eggnog_db/*
+!eggnog_db/.gitkeep

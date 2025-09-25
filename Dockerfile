@@ -2,7 +2,6 @@ FROM mambaorg/micromamba:1.5.8
 
 ENV MAMBA_DOCKERFILE_ACTIVATE=1
 
-
 RUN micromamba install -y -n base -c conda-forge -c bioconda \
     python=3.10 \
     cd-hit=4.8.1 \
@@ -14,6 +13,28 @@ RUN micromamba install -y -n base -c conda-forge -c bioconda \
 
 ENV EGGNOG_DATA_DIR=/data/eggnog
 
+USER root
+
+# Install git, Perl dependencies, and BV-BRC CLI
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    gnupg \
+    perl \
+    libtext-table-perl \
+    libtime-hires-perl \
+    libtry-tiny-perl \
+    liburi-perl \
+    libxml-libxml-perl \
+    libyaml-perl \
+ && wget https://github.com/BV-BRC/BV-BRC-CLI/releases/download/1.040/bvbrc-cli-1.040.deb \
+ && dpkg -i bvbrc-cli-1.040.deb || apt-get -f install -y \
+ && rm bvbrc-cli-1.040.deb \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# Clone the Pangenome-Analysis-Workflow repository
+RUN git clone https://github.com/melissaelfeghali/Pangenome-Analysis-Workflow.git /opt/Pangenome-Analysis-Workflow
 
 WORKDIR /work
 ENV PATH="/opt/conda/bin:$PATH"
