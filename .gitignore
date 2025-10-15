@@ -1,2 +1,13 @@
 eggnog_db/*
 !eggnog_db/.gitkeep
+
+# Ignore per-species generated files but keep CDS fasta files for Escherichia_coli
+# Path is relative to repo root; adjust if your code lives elsewhere
+/work/Pangenomics-Pipeline/codes/Escherichia_coli/*
+!/work/Pangenomics-Pipeline/codes/Escherichia_coli/*_CDS.fasta
+
+# Ignore pangenome figures directory (global)
+/work/Pangenomics-Pipeline/codes/pangenome_figures/
+
+# If you create per-species pangenome_figures inside each species folder, ignore those too
+*/pangenome_figures/
