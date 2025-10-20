@@ -86,7 +86,7 @@ for cid, seqs in clusters.items():
 # 1) presence absence matrix
 # Visualize only first N clusters
 # -------------------
-N = 30  # number of clusters to show
+N = 20  # number of clusters to show
 subset = presence_absence.iloc[:N]
 
 plt.figure(figsize=(12,6))
@@ -99,12 +99,12 @@ plt.matshow(subset, fignum=1, cmap=cmap, aspect='auto')
 plt.colorbar(label='Presence (1) / Absence (0)')
 
 # Set ticks
-plt.xticks(ticks=np.arange(len(subset.columns)), labels=subset.columns, rotation=90)
+plt.xticks(ticks=np.arange(len(subset.columns)), labels=subset.columns, rotation=90, fontsize=6)
 plt.yticks(ticks=np.arange(len(subset.index)), labels=subset.index)
 
 # Add grid lines between cells for clarity
 plt.grid(which='both', color='gray', linestyle='-', linewidth=0.5)
-plt.title(f"Presence/Absence Matrix for First {N} Clusters", pad=30, fontsize=14)
+plt.title(f"Presence/Absence Matrix for First {N} Clusters", pad=30, fontsize=8)
 plt.tight_layout()
 save_fig("presence_absence_matrix")
 
@@ -122,6 +122,7 @@ counts, bins, patches = plt.hist(
     edgecolor="black",      # bar borders
     alpha=0.85
 )
+plt.xticks(range(1, cluster_sizes.max()+1), fontsize=8)  # smaller x axis labels
 
 # Add counts on top of bars
 for count, patch in zip(counts, patches):
@@ -133,12 +134,12 @@ for count, patch in zip(counts, patches):
             int(height),
             ha="center",
             va="bottom",
-            fontsize=9
+            fontsize=5
         )
 
-plt.xlabel("Number of strains in cluster", fontsize=12)
-plt.ylabel("Number of clusters", fontsize=12)
-plt.title("Distribution of Cluster Occupancy Across Strains", fontsize=14)
+plt.xlabel("Number of strains in cluster", fontsize=8)
+plt.ylabel("Number of clusters", fontsize=8)
+plt.title("Distribution of Cluster Occupancy Across Strains", fontsize=8)
 plt.xticks(range(1, cluster_sizes.max()+1))
 plt.grid(axis="y", linestyle="--", alpha=0.7)
 plt.tight_layout()
@@ -156,7 +157,7 @@ strain_counts = cluster_sizes.values
 #plt.show()
 
 # 4) Heatmap of pairwise strain similarity (shared clusters)
-N = 1000  # first N clusters
+N = 100  # first N clusters
 subset = presence_absence.iloc[:N]  # select first N clusters (rows)
 
 # Compute pairwise strain similarity only for these clusters
@@ -165,8 +166,8 @@ strain_similarity_subset = subset.T.dot(subset)
 plt.figure(figsize=(8,6))
 plt.imshow(strain_similarity_subset, cmap="viridis")
 plt.colorbar(label="Shared clusters (first N clusters)")
-plt.xticks(range(len(strain_set)), strain_set, rotation=90)
-plt.yticks(range(len(strain_set)), strain_set)
+plt.xticks(range(len(strain_set)), strain_set, rotation=90, fontsize=6)
+plt.yticks(range(len(strain_set)), strain_set, fontsize=6)
 plt.title(f"Strain Similarity Heatmap (first {N} clusters)")
 plt.tight_layout()
 save_fig("strain_similarity_heatmap")
@@ -260,7 +261,7 @@ def parse_clstr_for_stacked_bar(path):
 # -------------------
 # Build stacked bar DataFrame
 # -------------------
-N = 30  # first N clusters
+N = 20  # first N clusters
 reps, strain_map = parse_clstr_for_stacked_bar(clstr_path)
 first_clusters = list(reps.keys())[:N]
 
