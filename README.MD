@@ -1,14 +1,14 @@
 
 from terminal 
 
-1-docker compose build 
+1- clone the repo and change the dirctory
+2-docker compose build 
+3-docker compose up -d
+4- get the container id: docker ps
+5-connect to the container: docker exec -it {container id } bash
+6- cd codes
+7- run the workflow: ./workflow1.sh
 
-2-docker compose up -d 
-
-
-FROM INSIDE THE CONTAINER 
-connect to the container 
-docker exec -it {container id } bash 
 
 
 CD HIT 
