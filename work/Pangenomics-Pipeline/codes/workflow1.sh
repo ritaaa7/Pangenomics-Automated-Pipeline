@@ -141,4 +141,4 @@ echo "----- Total Workflow Run-time: $run_time seconds-----"
 echo
 
 echo "Generating Visualizations"
-python visualizations.py
+python visualizations3.py
