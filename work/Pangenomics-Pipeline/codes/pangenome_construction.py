@@ -8,8 +8,9 @@ import bisect
 import sys
 
 species = sys.argv[1]
+total_genomes = int(sys.argv[2])  # Get total number of genomes as second argument
 
-def construct_pangenome(species, save = True):
+def construct_pangenome(species, total_genomes, save = True):
     var_counts = pd.read_csv(species+'/' +species+'_cluster_frequencies.csv', index_col = 0)
     var_freq = var_counts.groupby(by = 'Number of genomes', as_index = False).count()
     var_freq.columns = ['var_freq', 'var_count']
@@ -51,11 +52,11 @@ def construct_pangenome(species, save = True):
       return(c1*np.power(x,(-a1)) + c2*np.power((N + 1 - x),(-a2)))
 
     sol = scipy.optimize.minimize_scalar(fun = fd,
-                                         bounds = (1,var_freq.var_freq.max()), method = "bounded",
-                                         args = tuple([params[0], params[1], params[2], params[3], var_freq.var_freq.max()]))
+                                         bounds = (1,total_genomes), method = "bounded",
+                                         args = tuple([params[0], params[1], params[2], params[3], total_genomes]))
 
     unique_t = 0.1*sol.x
-    core_t = 0.9*var_freq.var_freq.max() + 0.1*sol.x
+    core_t = 0.9*total_genomes + 0.1*sol.x
     norm_unique_t = rescale(unique_t, [var_freq.var_freq.min(), var_freq.var_freq.max()])
     norm_core_t = rescale(core_t, [var_freq.var_freq.min(), var_freq.var_freq.max()])
     print("Unique Genes cutoff: " + str(norm_unique_t*100) + "% (" + str(unique_t) + ")")
@@ -147,7 +148,7 @@ def construct_pangenome(species, save = True):
     plt.savefig(species+'/'+species+"_pangenome_division.png")
 
     if(save):
-      var_counts['gene_class'] = np.repeat("", var_counts.shape[0])
+      var_counts['gene_class'] = np.repeat("", var_counts.shtotal_genomesape[0])
       var_counts.loc[core_filter, 'gene_class'] = 'core'
       var_counts.loc[accessory_filter, 'gene_class'] = 'accessory'
       var_counts.loc[unique_filter, 'gene_class'] = 'unique'
@@ -157,7 +158,7 @@ def construct_pangenome(species, save = True):
 
 start_time = time.time()
 
-construct_pangenome(species)
+construct_pangenome(species, total_genomes)
 
 print("\n======== Pangenome Construction Time for " + species + "========")
 print("\t\t", (time.time() - start_time), " seconds\n")

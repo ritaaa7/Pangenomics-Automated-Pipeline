@@ -702,115 +702,77 @@ if has_matrix_data:
     save_figure('06_stacked_bar_clusters.png')
 
 # ==============================================================================
-# ==============================================================================
-# FIGURE 7: STRAIN SIMILARITY HEATMAP (FIXED VERSION)
+# FIGURE 7: CLUSTERED STRAIN SIMILARITY HEATMAP (FINAL VERSION)
 # ==============================================================================
 if has_matrix_data:
-    print("\n[FIGURE 7] Generating Strain Similarity Heatmap...")
-    
+    print("\n[FIGURE 7] Generating Clustered Strain Similarity Heatmap...")
+
     # Calculate strain similarity matrix
     strain_similarity = presence_absence.T.dot(presence_absence)
-    
+
     # Create figure with appropriate size for many strains
     n_strains = len(strain_set)
     fig_size = max(14, n_strains * 0.25)  # Scale figure size with number of strains
-    fig, ax = plt.subplots(figsize=(fig_size, fig_size))
-    
-    # Create heatmap without individual cell annotations
-    im = ax.imshow(strain_similarity, cmap='viridis', 
-                   aspect='auto', interpolation='nearest')
-    
-    # Add colorbar
-    cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label('Number of Shared Gene Clusters', rotation=270, 
-                   labelpad=25, weight='bold', fontsize=12)
-    cbar.ax.tick_params(labelsize=10)
-    
-    # Set tick labels
-    ax.set_xticks(np.arange(len(strain_set)))
-    ax.set_yticks(np.arange(len(strain_set)))
-    
-    # Adjust font size based on number of strains
-    label_fontsize = max(6, 12 - n_strains // 10)
-    ax.set_xticklabels(strain_set, rotation=90, ha='right', fontsize=label_fontsize)
-    ax.set_yticklabels(strain_set, fontsize=label_fontsize)
-    
-    # Labels and title
-    ax.set_xlabel('Strain', weight='bold', fontsize=14)
-    ax.set_ylabel('Strain', weight='bold', fontsize=14)
-    ax.set_title('Pairwise Strain Similarity Based on Shared Gene Clusters', 
-                 pad=20, weight='bold', fontsize=16)
-    
-    # Add subtle grid lines
-    ax.set_xticks(np.arange(len(strain_set))-0.5, minor=True)
-    ax.set_yticks(np.arange(len(strain_set))-0.5, minor=True)
-    ax.grid(which='minor', color='white', linestyle='-', linewidth=0.5, alpha=0.3)
-    
-    # Style the border
-    for spine in ax.spines.values():
-        spine.set_edgecolor('black')
-        spine.set_linewidth(2)
-    
-    # Tight layout
-    plt.tight_layout()
-    
-    save_figure('07_strain_similarity_heatmap.png')
-    
-    # OPTIONAL: Create a second version with clustering for better visualization
-    print("\n[FIGURE 7b] Generating Clustered Strain Similarity Heatmap...")
-    
+
     from scipy.cluster.hierarchy import dendrogram, linkage
     from scipy.spatial.distance import squareform
-    
+
     # Convert similarity to distance for clustering
     max_similarity = strain_similarity.values.max()
     distance_matrix = max_similarity - strain_similarity.values
     np.fill_diagonal(distance_matrix, 0)
-    
+
     # Perform hierarchical clustering
     condensed_dist = squareform(distance_matrix)
     linkage_matrix = linkage(condensed_dist, method='average')
-    
+
     # Get the order from clustering
     dendro = dendrogram(linkage_matrix, no_plot=True)
     order = dendro['leaves']
-    
+
     # Reorder the similarity matrix
     strain_similarity_clustered = strain_similarity.iloc[order, order]
     strain_labels_ordered = [strain_set[i] for i in order]
-    
+
     # Create clustered heatmap
     fig, ax = plt.subplots(figsize=(fig_size, fig_size))
-    
-    im = ax.imshow(strain_similarity_clustered, cmap='viridis', 
+
+    im = ax.imshow(strain_similarity_clustered, cmap='viridis',
                    aspect='auto', interpolation='nearest')
-    
+
+    # Add colorbar
     cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label('Number of Shared Gene Clusters', rotation=270, 
+    cbar.set_label('Number of Shared Gene Clusters', rotation=270,
                    labelpad=25, weight='bold', fontsize=12)
     cbar.ax.tick_params(labelsize=10)
-    
+
+    # Axis labels
     ax.set_xticks(np.arange(len(strain_labels_ordered)))
     ax.set_yticks(np.arange(len(strain_labels_ordered)))
+    label_fontsize = max(6, 12 - n_strains // 10)
     ax.set_xticklabels(strain_labels_ordered, rotation=90, ha='right', fontsize=label_fontsize)
     ax.set_yticklabels(strain_labels_ordered, fontsize=label_fontsize)
-    
+
+    # Labels and title
     ax.set_xlabel('Strain', weight='bold', fontsize=14)
     ax.set_ylabel('Strain', weight='bold', fontsize=14)
-    ax.set_title('Clustered Pairwise Strain Similarity Based on Shared Gene Clusters', 
+    ax.set_title('Clustered Pairwise Strain Similarity Based on Shared Gene Clusters',
                  pad=20, weight='bold', fontsize=16)
-    
-    ax.set_xticks(np.arange(len(strain_labels_ordered))-0.5, minor=True)
-    ax.set_yticks(np.arange(len(strain_labels_ordered))-0.5, minor=True)
+
+    # Grid and border styling
+    ax.set_xticks(np.arange(len(strain_labels_ordered)) - 0.5, minor=True)
+    ax.set_yticks(np.arange(len(strain_labels_ordered)) - 0.5, minor=True)
     ax.grid(which='minor', color='white', linestyle='-', linewidth=0.5, alpha=0.3)
-    
+
     for spine in ax.spines.values():
         spine.set_edgecolor('black')
         spine.set_linewidth(2)
-    
+
     plt.tight_layout()
-    
-    save_figure('07b_strain_similarity_heatmap_clustered.png')
+
+    # Save final clustered heatmap
+    save_figure('07_strain_similarity_heatmap_clustered.png')
+
 
 # ==============================================================================
 # FINAL SUMMARY

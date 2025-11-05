@@ -4,6 +4,10 @@
 read -p "Enter the path to the directory containing the genome IDs: " directory
 echo
 
+# Ask user for the total number of genomes
+read -p "Enter the total number of genomes: " total_genomes
+echo
+
 # Keeps track of the run-time of the whole workflow 
 start_time=$(date +%s) 
 
@@ -90,7 +94,10 @@ for file in "$directory"/*.csv; do
 	echo "______________________________________________________"
 	echo
 
-	python3 pangenome_construction.py $species_name
+
+	
+
+	python3 pangenome_construction.py $species_name $total_genomes
 
         
 	# Translate CDS (DNA) into protein FASTA				# 
